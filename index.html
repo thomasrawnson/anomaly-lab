@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Department 42 — Anomaly Lab</title>
+<style>
+:root{
+  --bg:#151816;--panel:#202421;--panel2:#2b302c;--text:#eee8da;--muted:#a9ac9f;
+  --line:#454b46;--paper:#d8cfba;--amber:#d4a43a;--safe:#8ebe82;--breach:#dc7b5c;
+  --slime:#a7cb69;--mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}
+body{margin:0;min-height:100%;padding:18px;background:radial-gradient(circle at 15% 0,rgba(255,255,255,.03),transparent 28%),linear-gradient(#181b19,#111312);color:var(--text);font-family:var(--sans)}
+button{font:inherit}.shell{width:min(980px,100%);margin:auto;border:1px solid #4b514c;border-radius:12px;background:var(--panel);box-shadow:0 18px 50px rgba(0,0,0,.35);overflow:hidden}
+.header{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid var(--line);background:#1b1e1c}.brand{padding:22px 24px 18px}.eyebrow,.case-label{font:12px/1.2 var(--mono);letter-spacing:.18em;color:#bdb5a3}.brand h1{margin:5px 0 0;font:700 clamp(30px,5vw,48px)/.95 Georgia,serif;letter-spacing:.03em;color:var(--paper)}.subtitle{margin-top:10px;font:13px/1.4 var(--mono);color:var(--muted)}
+.case{min-width:160px;padding:18px 22px;border-left:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.018) 0 3px,transparent 3px 8px)}.case strong{margin-top:5px;font:22px/1 var(--mono);letter-spacing:.08em;color:var(--paper)}
+.statusbar{display:flex;justify-content:space-between;gap:14px;padding:11px 24px;background:#252a26;border-bottom:1px solid #353a36;font:12px/1.4 var(--mono);color:var(--muted)}.statusbar strong{color:var(--paper)}
+.section{padding:22px 24px;border-bottom:1px solid #343934}.heading{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:14px}.num{width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--line);border-radius:4px;background:#191c1a;font:12px var(--mono)}h2{margin:0;font:700 15px var(--mono);letter-spacing:.11em;color:var(--paper)}.hint{margin-left:auto;font:12px var(--mono);color:var(--muted)}
+.specimens{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.card{appearance:none;min-width:0;min-height:176px;padding:10px 8px;border:1px solid #555c56;border-radius:7px;background:linear-gradient(rgba(255,255,255,.035),rgba(0,0,0,.02)),#353b36;color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}.card:hover:not(:disabled){background:#3b423c}.card.selected{border:2px solid var(--amber);padding:9px 7px;background:#3b392f}.card.selected:after{content:"SELECTED";position:absolute;right:5px;top:5px;font:9px var(--mono);letter-spacing:.06em;color:var(--amber)}.card:disabled{opacity:.7;cursor:default}.letter{align-self:flex-start;font:700 16px var(--mono);color:var(--paper)}
+.specimen-art{height:86px;width:100%;display:grid;place-items:center}.specimen-art svg{width:86px;height:82px;overflow:visible}.name{font:700 12px/1.2 var(--mono);text-align:center;color:var(--paper)}.tag{font:11px/1.2 var(--mono);color:var(--muted)}
+.testgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr);gap:18px}.procedures{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}.procedure{min-height:148px;border:1px solid #555c56;border-radius:6px;background:#303531;color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;gap:6px}.procedure.selected{border:2px solid var(--amber);background:#3b392f;padding:9px}.procedure:disabled{opacity:.65;cursor:default}.procedure .lbl{font:700 12px var(--mono);letter-spacing:.05em}.procedure .desc{font:10px/1.25 var(--mono);color:var(--muted);text-align:center}
+.device{width:102px;height:78px;position:relative;display:grid;place-items:center}
+.drawer-body{width:76px;height:60px;border:3px solid #89908a;border-radius:5px;background:#242824;position:relative}.drawer-body:before,.drawer-body:after{content:"";position:absolute;left:7px;right:7px;height:20px;border:2px solid #737a74;background:#2b302c}.drawer-body:before{top:5px}.drawer-body:after{bottom:5px}.handle{position:absolute;width:22px;height:4px;border:2px solid #9ba29c;left:50%;transform:translateX(-50%);top:13px;z-index:2}
+.mug{width:72px;height:55px;border:3px solid #a3a69a;border-top:0;border-radius:4px 4px 18px 18px;position:relative;background:linear-gradient(to top,#66543c 0 55%,transparent 55%)}.mug:after{content:"";position:absolute;width:25px;height:30px;border:3px solid #a3a69a;border-left:0;border-radius:0 15px 15px 0;right:-26px;top:10px}.steam{position:absolute;top:0;font:22px Georgia;color:#999f98;letter-spacing:3px}
+.copier{width:84px;height:58px;border:3px solid #878f88;border-radius:5px;background:#292e2a;position:relative}.copier:before{content:"";position:absolute;left:9px;right:9px;top:7px;height:20px;border:2px solid #a7aea8;background:#151816}.copier:after{content:"";position:absolute;left:14px;right:14px;bottom:8px;height:12px;border:2px solid #656c66}.scanline{position:absolute;left:12px;right:12px;top:12px;height:2px;background:#d4a43a;opacity:.65}
+.action{width:100%;min-height:46px;border:1px solid #9a7726;border-radius:5px;background:linear-gradient(#e0b64e,#c69628);color:#171918;font:800 13px var(--mono);letter-spacing:.05em;cursor:pointer;padding:11px 14px}.action:disabled{border-color:#505550;background:#3c413d;color:#777d77;cursor:not-allowed}
+.reaction{margin-top:12px;border:1px solid #3e443f;border-radius:7px;background:#191c1a;min-height:124px;padding:10px 12px;display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:center;overflow:hidden}.reaction-stage{height:100px;position:relative;display:grid;place-items:center}.reaction-stage .mini{position:absolute;width:72px;height:70px;transition:transform .45s ease,opacity .25s ease}.reaction-stage .mini svg{width:72px;height:68px}.reaction-copy{min-width:0}.reaction-title{font:700 11px var(--mono);letter-spacing:.08em;color:var(--paper);margin-bottom:5px}.reaction-note{font:11px/1.45 var(--mono);color:var(--muted)}.reaction-result{margin-top:7px;font:800 13px var(--mono);letter-spacing:.05em}.reaction-result.breach{color:var(--breach)}.reaction-result.safe{color:var(--safe)}
+.reaction.testing .mini{animation:wiggle .5s ease-in-out 2}.reaction.testing .drawer-mini{animation:drawerClose .8s ease-in-out}.reaction.testing .tea-mini{animation:dunk .8s ease-in-out}.reaction.testing .scan-mini{animation:scan .8s linear}
+@keyframes wiggle{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}
+@keyframes drawerClose{0%{transform:translateY(0)}50%{transform:translateY(18px)}100%{transform:translateY(0)}}
+@keyframes dunk{0%{transform:translateY(0)}50%{transform:translateY(22px)}100%{transform:translateY(0)}}
+@keyframes scan{0%{transform:translateY(-18px)}100%{transform:translateY(24px)}}
+@media(prefers-reduced-motion:reduce){.reaction.testing .mini,.reaction.testing .drawer-mini,.reaction.testing .tea-mini,.reaction.testing .scan-mini{animation:none}}
+.log{border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#191c1a;min-height:258px}.loghead{display:flex;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #323732;font:11px var(--mono);letter-spacing:.1em;color:var(--muted)}.loglist{min-height:210px;display:flex;flex-direction:column}.empty{margin:auto;padding:18px;text-align:center;font:12px/1.5 var(--mono);color:#747a74}.entry{padding:10px 12px;border-bottom:1px solid #2d322e}.entry-top{display:grid;grid-template-columns:1fr auto;gap:10px;font:12px var(--mono)}.res{font-weight:700}.res.breach{color:var(--breach)}.res.safe{color:var(--safe)}.incident{margin-top:5px;font:10px/1.4 var(--mono);color:#8e948e}.incident:before{content:"↳ INCIDENT NOTE: ";color:#666d67}
+.hidden{display:none!important}.rules{display:grid;gap:8px}.rule{width:100%;border:1px solid #4b514c;border-radius:6px;background:#292d2a;color:var(--text);cursor:pointer;padding:13px 14px;display:grid;grid-template-columns:38px 1fr 20px;gap:10px;align-items:center;text-align:left}.rule.selected{border:2px solid var(--amber);padding:12px 13px;background:#38372f}.rule:disabled{opacity:.8;cursor:default}.ridx{font:700 12px var(--mono);color:var(--amber)}.dot{width:16px;height:16px;border-radius:50%;border:1px solid #70776f;position:relative}.rule.selected .dot{border-color:var(--amber)}.rule.selected .dot:after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--amber)}
+.rules-actions{margin-top:12px;display:grid;grid-template-columns:1fr auto minmax(180px,260px);gap:10px;align-items:center}.micro{font:11px/1.5 var(--mono);color:var(--muted)}.ghost{min-height:42px;border:1px solid #636963;border-radius:5px;background:#252a26;color:var(--paper);padding:9px 12px;font:700 11px var(--mono);cursor:pointer}.ghost.used{color:var(--safe);border-color:#53634f}.guidance{margin-top:10px;padding:12px 14px;border-left:3px solid var(--amber);background:#292a24;font:12px/1.5 var(--mono);color:#d8cfba}
+.investigation-summary{padding:14px 24px;border-bottom:1px solid #343934;background:#1b201c;display:flex;justify-content:space-between;gap:12px;align-items:center}.summary-copy{font:12px/1.5 var(--mono);color:var(--muted)}.summary-copy strong{color:var(--safe)}.summary-button{width:auto;min-width:170px}
+.finalgrid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px}.placement{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.cellTag{margin-left:auto;padding:8px 10px;border:1px solid var(--line);border-radius:5px;background:#262a27;font:12px var(--mono);color:var(--muted)}.cellTag strong{color:var(--amber)}.note{padding:18px;border-radius:5px;background:var(--paper);color:#191b19;transform:rotate(.5deg);font-family:Georgia,serif;box-shadow:0 3px 10px rgba(0,0,0,.2)}.note strong{display:block;margin-bottom:10px;font:11px var(--mono);letter-spacing:.07em}.note p{margin:0;font-size:15px;line-height:1.45}.placeAction{margin-top:12px;max-width:360px}
+.results{border:1px solid #52634f;border-radius:8px;padding:18px;background:linear-gradient(rgba(142,190,130,.05),transparent),#1b201b}.complete{margin-bottom:10px;font:800 clamp(24px,5vw,36px) var(--mono);color:var(--safe)}.assessment{margin-bottom:16px;font:800 12px/1.4 var(--mono);letter-spacing:.08em;color:var(--paper)}.resultbox{border:1px solid #384039;border-radius:5px;overflow:hidden;margin-bottom:14px}.resultrow{display:grid;grid-template-columns:1fr auto;gap:12px;padding:11px 12px;border-bottom:1px solid #323833;font:13px var(--mono)}.resultrow:last-child{border-bottom:0}.good{color:var(--safe);font-weight:700}.bad{color:var(--breach);font-weight:700}.resultnote{margin-bottom:12px;font:11px/1.5 var(--mono);color:var(--muted)}.stamp{display:inline-block;margin:3px 0 12px;padding:7px 12px;border:3px solid currentColor;transform:rotate(-2deg);font:900 16px var(--mono);letter-spacing:.08em}.stamp.good{color:var(--safe)}.stamp.bad{color:var(--breach)}
+.footer{display:flex;justify-content:space-between;gap:14px;padding:11px 24px;background:#171a18;border-top:1px solid #292e2a;font:10px/1.4 var(--mono);letter-spacing:.07em;color:#727872}
+button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
+@media(max-width:760px){body{padding:10px}.header{grid-template-columns:1fr}.case{min-width:0;border-left:0;border-top:1px solid var(--line);flex-direction:row;justify-content:space-between;padding:11px 18px}.brand,.section{padding-left:16px;padding-right:16px}.statusbar{padding-left:16px;padding-right:16px;align-items:flex-start}.specimens{grid-template-columns:repeat(2,1fr)}.specimens .card:last-child{grid-column:span 2;width:min(50%,190px);justify-self:center}.testgrid,.finalgrid{grid-template-columns:1fr}.hint{width:100%;margin-left:38px}.rules-actions{grid-template-columns:1fr}.investigation-summary{padding-left:16px;padding-right:16px;align-items:flex-start;flex-direction:column}.summary-button{width:100%}}
+@media(max-width:430px){.statusbar,.footer{flex-direction:column}.procedures,.placement{grid-template-columns:1fr}.cellTag{margin-left:37px}.specimens .card:last-child{width:70%}.reaction{grid-template-columns:1fr}.reaction-stage{height:80px}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header>
+<div class="header">
+<div class="brand"><div class="eyebrow">DEPARTMENT 42</div><h1>ANOMALY LAB</h1><div class="subtitle">Determine which containment rule is active.</div></div>
+<div class="case"><span class="case-label">ACTIVE FILE</span><strong>CASE 001</strong></div>
+</div>
+<div class="statusbar"><span>PROCEDURE: <strong>EXAMINE · TEST · DEDUCE · CONTAIN</strong></span><span>TESTS USED: <strong id="testsUsedTop">0 / 3</strong></span></div>
+</header>
+
+<div id="investigationArea">
+<section class="section">
+<div class="heading"><span class="num">1</span><h2>SPECIMENS</h2><span class="hint">Select one questionable life-form.</span></div>
+<div id="specimens" class="specimens"></div>
+</section>
+
+<section class="section">
+<div class="heading"><span class="num">2</span><h2>APPROVED TEST PROCEDURES</h2><span class="hint">"Approved" is doing a lot of work here.</span></div>
+<div class="testgrid">
+<div>
+<div id="procedures" class="procedures"></div>
+<button id="runTest" class="action" type="button" disabled>RUN PROCEDURE</button>
+<div id="reaction" class="reaction">
+<div id="reactionStage" class="reaction-stage"></div>
+<div class="reaction-copy"><div class="reaction-title">APPARATUS READY</div><div id="reactionNote" class="reaction-note">Select a specimen and procedure. Please do not reimburse the specimen for travel.</div><div id="reactionResult" class="reaction-result"></div></div>
+</div>
+</div>
+<div class="log" aria-live="polite"><div class="loghead"><span>TEST LOG</span><span id="logCount">0 / 3</span></div><div id="logList" class="loglist"><div class="empty">No test results recorded. An unusually quiet shift.</div></div></div>
+</div>
+</section>
+
+<section id="rulesSection" class="section hidden">
+<div class="heading"><span class="num">3</span><h2>POSSIBLE RULES</h2><span class="hint">Submit after at least one test.</span></div>
+<div id="rules" class="rules"></div>
+<div id="guidance" class="guidance hidden"></div>
+<div class="rules-actions">
+<div class="micro">Use up to three tests before committing. Submitting locks further testing and creates paperwork.</div>
+<button id="hintButton" class="ghost" type="button">REQUEST DEPARTMENTAL GUIDANCE</button>
+<button id="submitRule" class="action" type="button" disabled>SUBMIT RULE</button>
+</div>
+</section>
+</div>
+
+<div id="investigationSummary" class="investigation-summary hidden">
+<div class="summary-copy"><strong>✓ INVESTIGATION FILED</strong><br><span id="summaryText"></span></div>
+<button id="reviewButton" class="ghost summary-button" type="button">REVIEW INVESTIGATION</button>
+</div>
+
+<section id="finalSection" class="section hidden">
+<div class="heading"><span class="num">4</span><h2>FINAL CHECK</h2><span class="cellTag">PROCEDURE: <strong>PHOTOCOPIER</strong></span></div>
+<div class="finalgrid">
+<div><p class="micro" style="font-size:12px;margin:0 0 12px">Three fresh specimens. Only one should breach during xerographic exposure.</p><div id="placement" class="placement"></div><div class="placeAction"><button id="confirmPlacement" class="action" type="button" disabled>CONFIRM PLACEMENT</button></div></div>
+<aside class="note"><strong>FORM 42-C · FINAL VERIFICATION</strong><p>Incorrect containment decisions may result in a meeting, which is considered worse than the breach.</p></aside>
+</div>
+</section>
+
+<section id="resultsSection" class="section hidden">
+<div class="heading"><span class="num">5</span><h2>RESULT</h2></div>
+<div class="results" aria-live="polite">
+<div class="complete">CASE COMPLETE</div>
+<div id="resultStamp" class="stamp"></div>
+<div id="assessment" class="assessment"></div>
+<div class="resultbox">
+<div class="resultrow"><span>Rule</span><span id="ruleResult"></span></div>
+<div class="resultrow"><span>Placement</span><span id="placementResult"></span></div>
+<div class="resultrow"><span>Tests used</span><span id="testsResult"></span></div>
+<div class="resultrow"><span>Guidance</span><span id="hintResult"></span></div>
+<div class="resultrow"><span>Time</span><span id="timeResult"></span></div>
+</div>
+<div id="resultNote" class="resultnote"></div>
+<button id="tryAgain" class="action" type="button">TRY AGAIN</button>
+</div>
+</section>
+
+<footer class="footer"><span>PROPERTY OF DEPARTMENT 42 · ANOMALY LAB</span><span>IF IT WAVES BACK, CLOSE THE DRAWER.</span></footer>
+</main>
+
+<script>
+const caseData={
+ id:"001",testLimit:3,trueRuleId:"altered",
+ objects:{
+  A:{id:"A",kind:"frog",altered:true,tag:3,name:"Three-Eyed Frog"},
+  B:{id:"B",kind:"slug",altered:false,tag:7,name:"Ordinary Slug"},
+  C:{id:"C",kind:"mushroom",altered:false,tag:4,name:"Office Mushroom"},
+  D:{id:"D",kind:"mushroom",altered:true,tag:8,name:"Watching Mushroom"},
+  E:{id:"E",kind:"moth",altered:false,tag:2,name:"Ordinary Moth"}
+ },
+ rules:[
+  {id:"altered",name:"Specimens with visible mutations breach",evaluate:(o,p)=>o.altered===true},
+  {id:"even",name:"Even-numbered specimens breach",evaluate:(o,p)=>o.tag%2===0},
+  {id:"frog-moth",name:"Frogs and moths breach",evaluate:(o,p)=>o.kind==="frog"||o.kind==="moth"},
+  {id:"drawer",name:"Anything put in the Filing Drawer breaches",evaluate:(o,p)=>p==="Filing Drawer"}
+ ],
+ placement:{procedure:"Photocopier",objects:{
+  F:{id:"F",kind:"slug",altered:true,tag:5,name:"Three-Eyed Slug"},
+  G:{id:"G",kind:"frog",altered:false,tag:9,name:"Ordinary Frog"},
+  H:{id:"H",kind:"moth",altered:false,tag:6,name:"Ordinary Moth"}
+ }},
+ hint:"The equipment may be a distraction. Compare the specimens that caused a breach. Do they share something visible?",
+ incidentNotes:{
+  "A|Filing Drawer":"The frog has requested a union representative.",
+  "A|Tea Bath":"The frog drank the test medium. Finance has queried this.",
+  "A|Photocopier":"Copy came out with four eyes. Original still has three.",
+  "B|Filing Drawer":"Slug filed under S. This was apparently acceptable.",
+  "B|Tea Bath":"Slug has become marginally more slug.",
+  "B|Photocopier":"Photocopy indistinguishable from original at normal office resolution.",
+  "C|Filing Drawer":"Mushroom remains technically a stationery issue.",
+  "C|Tea Bath":"Tea now tastes of printer toner. Nobody is surprised.",
+  "C|Photocopier":"Copy produced. HR have asked that we stop doing this.",
+  "D|Filing Drawer":"Mushroom attempted to file itself as a dependent.",
+  "D|Tea Bath":"Cap rotated 11°. Procurement notified.",
+  "D|Photocopier":"Machine printed 'SEE ATTACHED' without paper.",
+  "E|Filing Drawer":"Moth now classified as archived correspondence.",
+  "E|Tea Bath":"Moth refused beverage. Sensible.",
+  "E|Photocopier":"Moth copied successfully. Copy immediately flew away."
+ }
+};
+const procedureData=[
+ {id:"Filing Drawer",kind:"drawer",desc:"Archive-grade containment drawer"},
+ {id:"Tea Bath",kind:"tea",desc:"Lukewarm departmental tea"},
+ {id:"Photocopier",kind:"copier",desc:"Xerographic exposure test"}
+];
+const state={object:null,procedure:null,tests:[],used:new Set(),rule:null,ruleSubmitted:false,placement:null,placementConfirmed:false,hintUsed:false,startTime:null,endTime:null,reviewOpen:false};
+const $=id=>document.getElementById(id);
+const els={
+ specimens:$("specimens"),procedures:$("procedures"),runTest:$("runTest"),testsUsedTop:$("testsUsedTop"),
+ logCount:$("logCount"),logList:$("logList"),rulesSection:$("rulesSection"),rules:$("rules"),submitRule:$("submitRule"),
+ hintButton:$("hintButton"),guidance:$("guidance"),investigationArea:$("investigationArea"),investigationSummary:$("investigationSummary"),
+ summaryText:$("summaryText"),reviewButton:$("reviewButton"),finalSection:$("finalSection"),placement:$("placement"),
+ confirmPlacement:$("confirmPlacement"),resultsSection:$("resultsSection"),ruleResult:$("ruleResult"),
+ placementResult:$("placementResult"),testsResult:$("testsResult"),hintResult:$("hintResult"),timeResult:$("timeResult"),
+ resultNote:$("resultNote"),resultStamp:$("resultStamp"),assessment:$("assessment"),tryAgain:$("tryAgain"),
+ reaction:$("reaction"),reactionStage:$("reactionStage"),reactionNote:$("reactionNote"),reactionResult:$("reactionResult")
+};
+
+function startTimer(){if(state.startTime===null)state.startTime=Date.now()}
+function formatTime(ms){const total=Math.max(0,Math.floor(ms/1000));const m=Math.floor(total/60);const s=total%60;return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
+function specimenSVG(o){
+ const fill=o.altered?'#a7cb69':'#d7cfbb', dark='#20251f', eye='#171917';
+ if(o.kind==="frog")return `<svg viewBox="0 0 90 80" role="img" aria-label="${o.name}">
+  <ellipse cx="45" cy="49" rx="27" ry="19" fill="${fill}" stroke="${dark}" stroke-width="3"/>
+  <circle cx="29" cy="30" r="10" fill="${fill}" stroke="${dark}" stroke-width="3"/><circle cx="61" cy="30" r="10" fill="${fill}" stroke="${dark}" stroke-width="3"/>
+  <circle cx="29" cy="29" r="3" fill="${eye}"/><circle cx="61" cy="29" r="3" fill="${eye}"/>
+  ${o.altered?'<circle cx="45" cy="21" r="9" fill="#a7cb69" stroke="#20251f" stroke-width="3"/><circle cx="45" cy="20" r="3" fill="#171917"/>':''}
+  <path d="M35 53 Q45 59 55 53" fill="none" stroke="${dark}" stroke-width="2"/><path d="M23 58 L12 70 M67 58 L78 70" stroke="${dark}" stroke-width="5" stroke-linecap="round"/></svg>`;
+ if(o.kind==="slug")return `<svg viewBox="0 0 90 80" role="img" aria-label="${o.name}">
+  <path d="M15 59 Q20 37 42 39 Q50 20 68 28 Q79 34 76 54 Q73 64 61 66 H21 Q13 65 15 59Z" fill="${fill}" stroke="${dark}" stroke-width="3"/>
+  <path d="M60 31 L64 18 M70 33 L77 22" stroke="${dark}" stroke-width="2"/><circle cx="64" cy="17" r="3" fill="${eye}"/><circle cx="78" cy="21" r="3" fill="${eye}"/>
+  ${o.altered?'<circle cx="49" cy="33" r="6" fill="#a7cb69" stroke="#20251f" stroke-width="2"/><circle cx="49" cy="33" r="2" fill="#171917"/>':''}</svg>`;
+ if(o.kind==="mushroom")return `<svg viewBox="0 0 90 80" role="img" aria-label="${o.name}">
+  <path d="M38 43 Q37 58 31 68 H59 Q53 57 52 43Z" fill="#d7cfbb" stroke="${dark}" stroke-width="3"/>
+  <path d="M15 42 Q19 17 45 15 Q72 17 76 42Z" fill="${fill}" stroke="${dark}" stroke-width="3"/>
+  <circle cx="31" cy="30" r="4" fill="${dark}" opacity=".6"/><circle cx="51" cy="23" r="3" fill="${dark}" opacity=".6"/>
+  ${o.altered?'<circle cx="63" cy="28" r="7" fill="#a7cb69" stroke="#20251f" stroke-width="2"/><circle cx="63" cy="28" r="2" fill="#171917"/>':'<circle cx="62" cy="34" r="4" fill="'+dark+'" opacity=".6"/>'}</svg>`;
+ return `<svg viewBox="0 0 90 80" role="img" aria-label="${o.name}">
+  <ellipse cx="45" cy="42" rx="7" ry="23" fill="${dark}"/><circle cx="45" cy="18" r="6" fill="${dark}"/>
+  <path d="M40 32 Q14 12 12 43 Q16 62 39 48Z" fill="${fill}" stroke="${dark}" stroke-width="3"/><path d="M50 32 Q76 12 78 43 Q74 62 51 48Z" fill="${fill}" stroke="${dark}" stroke-width="3"/>
+  <path d="M42 14 L34 5 M48 14 L56 5" stroke="${dark}" stroke-width="2"/></svg>`;
+}
+function trueRule(){return caseData.rules.find(r=>r.id===caseData.trueRuleId)}
+function card(o,isPlacement=false){
+ const b=document.createElement("button");b.type="button";b.className="card";
+ const selected=isPlacement?state.placement===o.id:state.object===o.id;if(selected)b.classList.add("selected");
+ b.disabled=isPlacement?state.placementConfirmed:state.ruleSubmitted||state.tests.length>=caseData.testLimit;
+ b.innerHTML=`<span class="letter">${o.id}</span><span class="specimen-art">${specimenSVG(o)}</span><span class="name">${o.name}</span><span class="tag">TAG ${o.tag}</span>`;
+ b.addEventListener("click",()=>{startTimer();if(isPlacement){if(state.placementConfirmed)return;state.placement=o.id;renderPlacement();updatePlacement()}else{if(b.disabled)return;state.object=o.id;renderSpecimens();updateTest();renderReactionReady()}});
+ return b;
+}
+function procedureVisual(p){
+ if(p.kind==="drawer")return `<div class="device"><div class="drawer-body"><span class="handle"></span></div></div>`;
+ if(p.kind==="tea")return `<div class="device"><span class="steam">~ ~</span><div class="mug"></div></div>`;
+ return `<div class="device"><div class="copier"><span class="scanline"></span></div></div>`;
+}
+function renderSpecimens(){els.specimens.innerHTML="";Object.values(caseData.objects).forEach(o=>els.specimens.appendChild(card(o,false)))}
+function renderPlacement(){els.placement.innerHTML="";Object.values(caseData.placement.objects).forEach(o=>els.placement.appendChild(card(o,true)))}
+function renderProcedures(){
+ els.procedures.innerHTML="";
+ procedureData.forEach(p=>{
+  const b=document.createElement("button");b.type="button";b.className="procedure"+(state.procedure===p.id?" selected":"");b.disabled=state.ruleSubmitted||state.tests.length>=caseData.testLimit;
+  b.innerHTML=procedureVisual(p)+`<span class="lbl">${p.id.toUpperCase()}</span><span class="desc">${p.desc}</span>`;
+  b.addEventListener("click",()=>{startTimer();if(b.disabled)return;state.procedure=p.id;renderProcedures();updateTest();renderReactionReady()});
+  els.procedures.appendChild(b)
+ })
+}
+function updateTest(){els.testsUsedTop.textContent=state.tests.length+" / "+caseData.testLimit;els.logCount.textContent=state.tests.length+" / "+caseData.testLimit;els.runTest.disabled=!state.object||!state.procedure||state.ruleSubmitted||state.tests.length>=caseData.testLimit}
+function renderReactionReady(){
+ els.reaction.classList.remove("testing");els.reactionResult.textContent="";els.reactionResult.className="reaction-result";
+ if(!state.object&&!state.procedure){els.reactionStage.innerHTML="";els.reactionNote.textContent="Select a specimen and procedure. Please do not reimburse the specimen for travel.";return}
+ els.reactionStage.innerHTML=state.object?`<div class="mini">${specimenSVG(caseData.objects[state.object])}</div>`:"";
+ const specimen=state.object?caseData.objects[state.object].name:"No specimen";
+ const procedure=state.procedure||"no procedure";
+ els.reactionNote.textContent=`Queued: ${specimen} → ${procedure}. ${state.object&&state.procedure?"Authorisation pending.":"Complete both selections."}`;
+}
+function playReaction(test){
+ els.reaction.classList.remove("testing");void els.reaction.offsetWidth;els.reaction.classList.add("testing");
+ const p=procedureData.find(x=>x.id===test.procedure);
+ const className=p.kind==="drawer"?"drawer-mini":p.kind==="tea"?"tea-mini":"scan-mini";
+ els.reactionStage.innerHTML=`<div class="mini ${className}">${specimenSVG(caseData.objects[test.object])}</div>`;
+ els.reactionNote.textContent=test.note;
+ els.reactionResult.textContent=test.breach?"BREACH ✕":"SAFE ○";
+ els.reactionResult.className="reaction-result "+(test.breach?"breach":"safe");
+ setTimeout(()=>els.reaction.classList.remove("testing"),900);
+}
+function renderLog(){
+ els.logList.innerHTML="";
+ if(!state.tests.length){els.logList.innerHTML='<div class="empty">No test results recorded. An unusually quiet shift.</div>';return}
+ state.tests.forEach(t=>{const d=document.createElement("div");d.className="entry";d.innerHTML=`<div class="entry-top"><span>${t.object} + ${t.procedure}</span><span class="res ${t.breach?"breach":"safe"}">${t.breach?"BREACH ✕":"SAFE ○"}</span></div><div class="incident">${t.note}</div>`;els.logList.appendChild(d)})
+}
+function renderRules(){
+ els.rules.innerHTML="";
+ caseData.rules.forEach((r,i)=>{const b=document.createElement("button");b.type="button";b.className="rule"+(state.rule===r.id?" selected":"");b.disabled=state.ruleSubmitted;b.innerHTML=`<span class="ridx">${String(i+1).padStart(2,"0")}</span><span>${r.name}</span><span class="dot"></span>`;b.addEventListener("click",()=>{if(state.ruleSubmitted)return;state.rule=r.id;renderRules();updateRule()});els.rules.appendChild(b)})
+}
+function updateRule(){els.submitRule.disabled=!state.tests.length||!state.rule||state.ruleSubmitted}
+function updatePlacement(){els.confirmPlacement.disabled=!state.placement||state.placementConfirmed}
+function runTest(){
+ if(els.runTest.disabled)return;
+ const key=state.object+"|"+state.procedure;if(state.used.has(key))return;
+ const breach=trueRule().evaluate(caseData.objects[state.object],state.procedure);
+ const note=caseData.incidentNotes[key]||(breach?"Unexpected administrative activity observed.":"Nothing happened, which remains suspicious.");
+ const test={object:state.object,procedure:state.procedure,breach,note};
+ state.used.add(key);state.tests.push(test);playReaction(test);state.object=null;state.procedure=null;
+ renderSpecimens();renderProcedures();renderLog();updateTest();
+ if(state.tests.length===1){els.rulesSection.classList.remove("hidden");renderRules()}updateRule()
+}
+function useHint(){
+ if(state.hintUsed)return;state.hintUsed=true;els.guidance.textContent="GUIDANCE 42-B: "+caseData.hint;els.guidance.classList.remove("hidden");els.hintButton.textContent="GUIDANCE RECEIVED ✓";els.hintButton.classList.add("used")
+}
+function submitRule(){
+ if(els.submitRule.disabled)return;state.ruleSubmitted=true;state.object=null;state.procedure=null;renderSpecimens();renderProcedures();renderRules();updateTest();updateRule();renderReactionReady();
+ els.investigationArea.classList.add("hidden");els.summaryText.textContent=`${state.tests.length} test${state.tests.length===1?"":"s"} used · Rule filed${state.hintUsed?" · Guidance requested":""}.`;els.investigationSummary.classList.remove("hidden");
+ els.finalSection.classList.remove("hidden");renderPlacement();updatePlacement();els.finalSection.scrollIntoView({behavior:"smooth",block:"start"})
+}
+function toggleReview(){
+ state.reviewOpen=!state.reviewOpen;els.investigationArea.classList.toggle("hidden",!state.reviewOpen);els.reviewButton.textContent=state.reviewOpen?"HIDE INVESTIGATION":"REVIEW INVESTIGATION"
+}
+function performance(ruleCorrect,placementCorrect){
+ if(ruleCorrect&&placementCorrect&&!state.hintUsed&&state.tests.length<=2)return["EMPLOYEE ASSESSMENT: CONCERNINGLY EFFICIENT","No unnecessary forms were generated. This will be investigated."];
+ if(ruleCorrect&&placementCorrect&&!state.hintUsed)return["EMPLOYEE ASSESSMENT: ACCEPTABLE","Containment achieved without departmental assistance. Please do not make a habit of it."];
+ if(ruleCorrect&&placementCorrect&&state.hintUsed)return["EMPLOYEE ASSESSMENT: ADEQUATE WITH SUPERVISION","Containment achieved after approved guidance. Guidance form has been filed in triplicate."];
+ if(!ruleCorrect&&placementCorrect)return["EMPLOYEE ASSESSMENT: CONCERNINGLY LUCKY","The outcome was correct. The reasoning was not. Management has described this as 'promising'."];
+ if(ruleCorrect&&!placementCorrect)return["EMPLOYEE ASSESSMENT: TECHNICALLY CORRECT","An accurate theory was converted into an inaccurate decision. Very departmental."];
+ return["EMPLOYEE ASSESSMENT: MANAGEMENT MATERIAL","Both deductions were incorrect. Your confidence has been noted as a leadership quality."]
+}
+function confirmPlacement(){
+ if(els.confirmPlacement.disabled)return;state.placementConfirmed=true;state.endTime=Date.now();renderPlacement();updatePlacement();
+ const ruleCorrect=state.rule===caseData.trueRuleId,tr=trueRule(),breaches=Object.values(caseData.placement.objects).filter(o=>tr.evaluate(o,caseData.placement.procedure)),placementCorrect=breaches.length===1&&breaches[0].id===state.placement,perfect=ruleCorrect&&placementCorrect;
+ els.ruleResult.textContent=ruleCorrect?"✓ Correct":"✕ Incorrect";els.ruleResult.className=ruleCorrect?"good":"bad";
+ els.placementResult.textContent=placementCorrect?"✓ Correct":"✕ Incorrect";els.placementResult.className=placementCorrect?"good":"bad";
+ els.testsResult.textContent=state.tests.length+" / "+caseData.testLimit;els.hintResult.textContent=state.hintUsed?"Used":"Not used";els.hintResult.className=state.hintUsed?"":"good";
+ els.timeResult.textContent=formatTime(state.endTime-(state.startTime||state.endTime));
+ els.resultStamp.textContent=perfect?"CONTAINMENT APPROVED":"FORM RETURNED";els.resultStamp.className="stamp "+(perfect?"good":"bad");
+ const perf=performance(ruleCorrect,placementCorrect);els.assessment.textContent=perf[0];els.resultNote.textContent=perf[1];
+ els.resultsSection.classList.remove("hidden");els.resultsSection.scrollIntoView({behavior:"smooth",block:"start"})
+}
+function restart(){
+ state.object=null;state.procedure=null;state.tests=[];state.used=new Set();state.rule=null;state.ruleSubmitted=false;state.placement=null;state.placementConfirmed=false;state.hintUsed=false;state.startTime=null;state.endTime=null;state.reviewOpen=false;
+ els.rulesSection.classList.add("hidden");els.guidance.classList.add("hidden");els.guidance.textContent="";els.hintButton.textContent="REQUEST DEPARTMENTAL GUIDANCE";els.hintButton.classList.remove("used");
+ els.investigationArea.classList.remove("hidden");els.investigationSummary.classList.add("hidden");els.reviewButton.textContent="REVIEW INVESTIGATION";els.finalSection.classList.add("hidden");els.resultsSection.classList.add("hidden");
+ renderSpecimens();renderProcedures();renderLog();renderRules();renderPlacement();updateTest();updateRule();updatePlacement();renderReactionReady();window.scrollTo({top:0,behavior:"smooth"})
+}
+els.runTest.addEventListener("click",runTest);els.submitRule.addEventListener("click",submitRule);els.hintButton.addEventListener("click",useHint);els.reviewButton.addEventListener("click",toggleReview);els.confirmPlacement.addEventListener("click",confirmPlacement);els.tryAgain.addEventListener("click",restart);
+renderSpecimens();renderProcedures();renderLog();renderRules();renderPlacement();updateTest();updateRule();updatePlacement();renderReactionReady();
+
+// Case 001 logic checks
+console.assert(trueRule().evaluate(caseData.objects.A,"Tea Bath")===true,"A should breach");
+console.assert(trueRule().evaluate(caseData.objects.C,"Filing Drawer")===false,"C should be safe");
+console.assert(trueRule().evaluate(caseData.objects.D,"Photocopier")===true,"D should breach");
+console.assert(trueRule().evaluate(caseData.placement.objects.F,"Photocopier")===true&&trueRule().evaluate(caseData.placement.objects.G,"Photocopier")===false&&trueRule().evaluate(caseData.placement.objects.H,"Photocopier")===false,"F should be the only final breach");
+</script>
+</body>
+</html>
