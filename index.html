@@ -43,26 +43,80 @@ button{font:inherit}.shell{width:min(980px,100%);margin:auto;border:1px solid #4
 button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
 @media(max-width:760px){body{padding:10px}.header{grid-template-columns:1fr}.case{min-width:0;border-left:0;border-top:1px solid var(--line);flex-direction:row;justify-content:space-between;padding:11px 18px}.brand,.section{padding-left:16px;padding-right:16px}.statusbar{padding-left:16px;padding-right:16px;align-items:flex-start}.specimens{grid-template-columns:repeat(2,1fr)}.specimens .card:last-child{grid-column:span 2;width:min(50%,190px);justify-self:center}.testgrid,.finalgrid{grid-template-columns:1fr}.hint{width:100%;margin-left:38px}.rules-actions{grid-template-columns:1fr}.investigation-summary{padding-left:16px;padding-right:16px;align-items:flex-start;flex-direction:column}.summary-button{width:100%}}
 @media(max-width:430px){.statusbar,.footer{flex-direction:column}.procedures,.placement{grid-template-columns:1fr}.cellTag{margin-left:37px}.specimens .card:last-child{width:70%}.reaction{grid-template-columns:1fr}.reaction-stage{height:80px}}
+
+.rules-intro{margin-bottom:12px;padding:11px 13px;border-left:3px solid var(--amber);background:#292a24;font:12px/1.5 var(--mono);color:#d8cfba}
+.first-turn{margin-top:12px;border:1px dashed #74633a;border-radius:6px;background:#24251f;padding:12px 14px;font:11px/1.55 var(--mono);color:#c8c0ad}
+.first-turn strong{color:var(--amber)}
+.status-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.help-btn{border:1px solid #636963;border-radius:4px;background:#1c201d;color:var(--paper);padding:7px 10px;font:700 10px var(--mono);letter-spacing:.05em;cursor:pointer}
+.modal-overlay{position:fixed;inset:0;background:rgba(7,9,8,.82);display:grid;place-items:center;padding:18px;z-index:50}
+.modal{width:min(610px,100%);max-height:calc(100vh - 36px);overflow:auto;border:1px solid #666d67;border-radius:10px;background:#202421;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+.modal-head{padding:20px 22px 14px;border-bottom:1px solid #3c423d}
+.modal-kicker{font:11px var(--mono);letter-spacing:.14em;color:var(--amber)}
+.modal h3{margin:7px 0 0;font:700 26px/1.1 Georgia,serif;color:var(--paper)}
+.modal-body{padding:18px 22px}
+.tutorial-step{display:grid;grid-template-columns:34px 1fr;gap:12px;margin-bottom:15px;align-items:start}
+.tutorial-n{width:30px;height:30px;border:1px solid #686f69;border-radius:50%;display:grid;place-items:center;font:700 11px var(--mono);color:var(--amber)}
+.tutorial-step strong{display:block;margin-bottom:3px;font:700 12px var(--mono);color:var(--paper)}
+.tutorial-step p{margin:0;font:12px/1.5 var(--mono);color:var(--muted)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0;padding:12px;border:1px solid #3c423d;background:#191c1a;font:12px var(--mono)}
+.modal-actions{display:flex;justify-content:flex-end;padding:0 22px 22px}
+.modal-actions .action{width:auto;min-width:190px}
+@media(max-width:760px){.status-right{justify-content:flex-start}}
+
 </style>
 </head>
 <body>
+
+<div id="tutorialModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-kicker">NEW EMPLOYEE ORIENTATION · FORM 42-A</div>
+      <h3 id="tutorialTitle">How to investigate an anomaly</h3>
+    </div>
+    <div class="modal-body">
+      <div class="tutorial-step"><div class="tutorial-n">1</div><div><strong>READ THE POSSIBLE BREACH RULES</strong><p>Exactly one rule is active. Read all four before you touch the evidence.</p></div></div>
+      <div class="tutorial-step"><div class="tutorial-n">2</div><div><strong>DESIGN A USEFUL TEST</strong><p>Choose a specimen and an approved procedure. Pick a combination that would help separate the possible rules.</p></div></div>
+      <div class="tutorial-step"><div class="tutorial-n">3</div><div><strong>USE SAFE / BREACH AS EVIDENCE</strong><p>A breach means the active rule was triggered. A safe result means it was not. You have up to three tests.</p></div></div>
+      <div class="tutorial-step"><div class="tutorial-n">4</div><div><strong>FILE YOUR RULE, THEN PROVE IT</strong><p>Submit the rule you think is active, then apply it to three fresh specimens in the final check.</p></div></div>
+      <div class="legend"><span class="good">SAFE ○ = rule not triggered</span><span class="bad">BREACH ✕ = rule triggered</span></div>
+      <div class="micro">Department 42 reminder: random testing is permitted, but thinking first creates less paperwork.</div>
+    </div>
+    <div class="modal-actions"><button id="closeTutorial" class="action" type="button">BEGIN CASE</button></div>
+  </div>
+</div>
+
 <main class="shell">
 <header>
 <div class="header">
 <div class="brand"><div class="eyebrow">DEPARTMENT 42</div><h1>ANOMALY LAB</h1><div class="subtitle">Determine which containment rule is active.</div></div>
 <div class="case"><span class="case-label">ACTIVE FILE</span><strong>CASE 001</strong></div>
 </div>
-<div class="statusbar"><span>PROCEDURE: <strong>EXAMINE · TEST · DEDUCE · CONTAIN</strong></span><span>TESTS USED: <strong id="testsUsedTop">0 / 3</strong></span></div>
+<div class="statusbar"><span>PROCEDURE: <strong>READ · TEST · DEDUCE · CONTAIN</strong></span><div class="status-right"><span>TESTS USED: <strong id="testsUsedTop">0 / 3</strong></span><button id="openTutorial" class="help-btn" type="button">HOW TO PLAY</button></div></div>
 </header>
 
 <div id="investigationArea">
+
+<section id="rulesSection" class="section">
+<div class="heading"><span class="num">1</span><h2>POSSIBLE BREACH RULES</h2><span class="hint">One of these is active.</span></div>
+<div class="rules-intro"><strong>START HERE:</strong> Read all four possibilities before testing. Your first experiment should help you separate them.</div>
+<div id="rules" class="rules"></div>
+<div id="firstTurnGuide" class="first-turn"><strong>FIRST TEST GUIDE:</strong> Ask “Which specimen + procedure would give different outcomes under these rules?” Pick one useful combination, run it, then use SAFE/BREACH to rule ideas in or out.</div>
+<div id="guidance" class="guidance hidden"></div>
+<div class="rules-actions">
+<div class="micro">You can choose a tentative rule now, but you must perform at least one test before submitting it.</div>
+<button id="hintButton" class="ghost" type="button" disabled>GUIDANCE AFTER FIRST TEST</button>
+<button id="submitRule" class="action" type="button" disabled>SUBMIT RULE</button>
+</div>
+</section>
+
 <section class="section">
-<div class="heading"><span class="num">1</span><h2>SPECIMENS</h2><span class="hint">Select one questionable life-form.</span></div>
+<div class="heading"><span class="num">2</span><h2>SPECIMENS</h2><span class="hint">Choose evidence that helps test a rule.</span></div>
 <div id="specimens" class="specimens"></div>
 </section>
 
 <section class="section">
-<div class="heading"><span class="num">2</span><h2>APPROVED TEST PROCEDURES</h2><span class="hint">"Approved" is doing a lot of work here.</span></div>
+<div class="heading"><span class="num">3</span><h2>APPROVED TEST PROCEDURES</h2><span class="hint">"Approved" is doing a lot of work here.</span></div>
 <div class="testgrid">
 <div>
 <div id="procedures" class="procedures"></div>
@@ -73,17 +127,6 @@ button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
 </div>
 </div>
 <div class="log" aria-live="polite"><div class="loghead"><span>TEST LOG</span><span id="logCount">0 / 3</span></div><div id="logList" class="loglist"><div class="empty">No test results recorded. An unusually quiet shift.</div></div></div>
-</div>
-</section>
-
-<section id="rulesSection" class="section hidden">
-<div class="heading"><span class="num">3</span><h2>POSSIBLE RULES</h2><span class="hint">Submit after at least one test.</span></div>
-<div id="rules" class="rules"></div>
-<div id="guidance" class="guidance hidden"></div>
-<div class="rules-actions">
-<div class="micro">Use up to three tests before committing. Submitting locks further testing and creates paperwork.</div>
-<button id="hintButton" class="ghost" type="button">REQUEST DEPARTMENTAL GUIDANCE</button>
-<button id="submitRule" class="action" type="button" disabled>SUBMIT RULE</button>
 </div>
 </section>
 </div>
@@ -177,7 +220,8 @@ const els={
  confirmPlacement:$("confirmPlacement"),resultsSection:$("resultsSection"),ruleResult:$("ruleResult"),
  placementResult:$("placementResult"),testsResult:$("testsResult"),hintResult:$("hintResult"),timeResult:$("timeResult"),
  resultNote:$("resultNote"),resultStamp:$("resultStamp"),assessment:$("assessment"),tryAgain:$("tryAgain"),
- reaction:$("reaction"),reactionStage:$("reactionStage"),reactionNote:$("reactionNote"),reactionResult:$("reactionResult")
+ reaction:$("reaction"),reactionStage:$("reactionStage"),reactionNote:$("reactionNote"),reactionResult:$("reactionResult"),
+ firstTurnGuide:$("firstTurnGuide"),tutorialModal:$("tutorialModal"),closeTutorial:$("closeTutorial"),openTutorial:$("openTutorial")
 };
 
 function startTimer(){if(state.startTime===null)state.startTime=Date.now()}
@@ -229,7 +273,7 @@ function renderProcedures(){
   els.procedures.appendChild(b)
  })
 }
-function updateTest(){els.testsUsedTop.textContent=state.tests.length+" / "+caseData.testLimit;els.logCount.textContent=state.tests.length+" / "+caseData.testLimit;els.runTest.disabled=!state.object||!state.procedure||state.ruleSubmitted||state.tests.length>=caseData.testLimit}
+function updateTest(){els.testsUsedTop.textContent=state.tests.length+" / "+caseData.testLimit;els.logCount.textContent=state.tests.length+" / "+caseData.testLimit;const duplicate=Boolean(state.object&&state.procedure&&state.used.has(state.object+"|"+state.procedure));els.runTest.disabled=!state.object||!state.procedure||state.ruleSubmitted||state.tests.length>=caseData.testLimit||duplicate}
 function renderReactionReady(){
  els.reaction.classList.remove("testing");els.reactionResult.textContent="";els.reactionResult.className="reaction-result";
  if(!state.object&&!state.procedure){els.reactionStage.innerHTML="";els.reactionNote.textContent="Select a specimen and procedure. Please do not reimburse the specimen for travel.";return}
@@ -257,7 +301,11 @@ function renderRules(){
  els.rules.innerHTML="";
  caseData.rules.forEach((r,i)=>{const b=document.createElement("button");b.type="button";b.className="rule"+(state.rule===r.id?" selected":"");b.disabled=state.ruleSubmitted;b.innerHTML=`<span class="ridx">${String(i+1).padStart(2,"0")}</span><span>${r.name}</span><span class="dot"></span>`;b.addEventListener("click",()=>{if(state.ruleSubmitted)return;state.rule=r.id;renderRules();updateRule()});els.rules.appendChild(b)})
 }
-function updateRule(){els.submitRule.disabled=!state.tests.length||!state.rule||state.ruleSubmitted}
+function updateRule(){
+ els.submitRule.disabled=!state.tests.length||!state.rule||state.ruleSubmitted;
+ els.hintButton.disabled=!state.tests.length||state.hintUsed||state.ruleSubmitted;
+ if(!state.hintUsed)els.hintButton.textContent=state.tests.length?"REQUEST DEPARTMENTAL GUIDANCE":"GUIDANCE AFTER FIRST TEST";
+}
 function updatePlacement(){els.confirmPlacement.disabled=!state.placement||state.placementConfirmed}
 function runTest(){
  if(els.runTest.disabled)return;
@@ -266,11 +314,10 @@ function runTest(){
  const note=caseData.incidentNotes[key]||(breach?"Unexpected administrative activity observed.":"Nothing happened, which remains suspicious.");
  const test={object:state.object,procedure:state.procedure,breach,note};
  state.used.add(key);state.tests.push(test);playReaction(test);state.object=null;state.procedure=null;
- renderSpecimens();renderProcedures();renderLog();updateTest();
- if(state.tests.length===1){els.rulesSection.classList.remove("hidden");renderRules()}updateRule()
+ els.firstTurnGuide.classList.add("hidden");renderSpecimens();renderProcedures();renderLog();updateTest();updateRule()
 }
 function useHint(){
- if(state.hintUsed)return;state.hintUsed=true;els.guidance.textContent="GUIDANCE 42-B: "+caseData.hint;els.guidance.classList.remove("hidden");els.hintButton.textContent="GUIDANCE RECEIVED ✓";els.hintButton.classList.add("used")
+ if(state.hintUsed||!state.tests.length)return;state.hintUsed=true;els.guidance.textContent="GUIDANCE 42-B: "+caseData.hint;els.guidance.classList.remove("hidden");els.hintButton.textContent="GUIDANCE RECEIVED ✓";els.hintButton.classList.add("used")
 }
 function submitRule(){
  if(els.submitRule.disabled)return;state.ruleSubmitted=true;state.object=null;state.procedure=null;renderSpecimens();renderProcedures();renderRules();updateTest();updateRule();renderReactionReady();
@@ -299,13 +346,15 @@ function confirmPlacement(){
  const perf=performance(ruleCorrect,placementCorrect);els.assessment.textContent=perf[0];els.resultNote.textContent=perf[1];
  els.resultsSection.classList.remove("hidden");els.resultsSection.scrollIntoView({behavior:"smooth",block:"start"})
 }
+function openTutorial(){els.tutorialModal.classList.remove("hidden");els.closeTutorial.focus()}
+function closeTutorial(){els.tutorialModal.classList.add("hidden");els.openTutorial.focus()}
 function restart(){
  state.object=null;state.procedure=null;state.tests=[];state.used=new Set();state.rule=null;state.ruleSubmitted=false;state.placement=null;state.placementConfirmed=false;state.hintUsed=false;state.startTime=null;state.endTime=null;state.reviewOpen=false;
- els.rulesSection.classList.add("hidden");els.guidance.classList.add("hidden");els.guidance.textContent="";els.hintButton.textContent="REQUEST DEPARTMENTAL GUIDANCE";els.hintButton.classList.remove("used");
+ els.rulesSection.classList.remove("hidden");els.guidance.classList.add("hidden");els.guidance.textContent="";els.firstTurnGuide.classList.remove("hidden");els.hintButton.textContent="GUIDANCE AFTER FIRST TEST";els.hintButton.classList.remove("used");
  els.investigationArea.classList.remove("hidden");els.investigationSummary.classList.add("hidden");els.reviewButton.textContent="REVIEW INVESTIGATION";els.finalSection.classList.add("hidden");els.resultsSection.classList.add("hidden");
  renderSpecimens();renderProcedures();renderLog();renderRules();renderPlacement();updateTest();updateRule();updatePlacement();renderReactionReady();window.scrollTo({top:0,behavior:"smooth"})
 }
-els.runTest.addEventListener("click",runTest);els.submitRule.addEventListener("click",submitRule);els.hintButton.addEventListener("click",useHint);els.reviewButton.addEventListener("click",toggleReview);els.confirmPlacement.addEventListener("click",confirmPlacement);els.tryAgain.addEventListener("click",restart);
+els.runTest.addEventListener("click",runTest);els.submitRule.addEventListener("click",submitRule);els.hintButton.addEventListener("click",useHint);els.reviewButton.addEventListener("click",toggleReview);els.confirmPlacement.addEventListener("click",confirmPlacement);els.tryAgain.addEventListener("click",restart);els.openTutorial.addEventListener("click",openTutorial);els.closeTutorial.addEventListener("click",closeTutorial);els.tutorialModal.addEventListener("click",e=>{if(e.target===els.tutorialModal)closeTutorial()});
 renderSpecimens();renderProcedures();renderLog();renderRules();renderPlacement();updateTest();updateRule();updatePlacement();renderReactionReady();
 
 // Case 001 logic checks
