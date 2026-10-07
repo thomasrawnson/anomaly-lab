@@ -64,6 +64,105 @@ button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
 .modal-actions .action{width:auto;min-width:190px}
 @media(max-width:760px){.status-right{justify-content:flex-start}}
 
+
+/* V5 clarity + mobile pass */
+.goal-copy strong{display:block;color:var(--paper);font:800 12px/1.4 var(--mono);letter-spacing:.06em;margin-bottom:4px}
+.goal-copy p{margin:0;color:#c5bdab;font:12px/1.55 var(--mono)}
+.goal-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font:11px var(--mono)}
+.goal-legend .safe-key{color:var(--safe);font-weight:700}
+.goal-legend .breach-key{color:var(--breach);font-weight:700}
+
+.example-box{
+  margin-top:10px;padding:11px 12px;border:1px solid #4b514c;border-radius:5px;
+  background:#1b1f1c;font:11px/1.55 var(--mono);color:var(--muted)
+}
+.example-box strong{color:var(--paper)}
+.example-box .example-result{color:var(--safe);font-weight:700}
+
+.selection-summary{
+  margin:0 0 10px;padding:10px 12px;border:1px solid #3f4540;border-radius:5px;
+  background:#1b1f1c;font:11px/1.45 var(--mono);color:var(--muted)
+}
+.selection-summary strong{color:var(--paper)}
+.next-step{
+  margin-top:8px;color:var(--amber);font-weight:700
+}
+
+.mobile-stepbar{display:none}
+
+@media(max-width:760px){
+  body{padding:0;background:#121513}
+  .shell{border-radius:0;border-left:0;border-right:0;box-shadow:none;width:100%}
+  .brand{padding-top:16px;padding-bottom:14px}
+  .brand h1{font-size:34px}
+  .subtitle{font-size:12px}
+  .case{padding:9px 16px}
+  .case strong{font-size:17px}
+  .statusbar{position:sticky;top:0;z-index:20;background:#252a26;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+  .status-left{display:none}
+  .status-right{width:100%;justify-content:space-between}
+  .help-btn{min-height:44px;padding:10px 12px}
+  .section{padding-top:18px;padding-bottom:18px}
+  .heading{margin-bottom:11px}
+  .hint{font-size:11px;margin-left:37px}
+  .rules-intro{font-size:11px;line-height:1.55}
+  .rule{min-height:52px;padding:11px 10px;grid-template-columns:30px 1fr 18px}
+  .rule.selected{padding:10px 9px}
+  .ridx{font-size:11px}
+  .first-turn{font-size:11px}
+  .specimens{gap:8px}
+  .card{min-height:155px;padding:8px 6px}
+  .card.selected{padding:7px 5px}
+  .specimen-art{height:72px}
+  .specimen-art svg{width:72px;height:70px}
+  .name{font-size:11px}
+  .tag{font-size:10px}
+  .procedures{gap:8px}
+  .procedure{min-height:116px;display:grid;grid-template-columns:100px 1fr;grid-template-rows:auto auto;text-align:left;justify-items:start}
+  .procedure .device{grid-row:1 / span 2;grid-column:1}
+  .procedure .lbl{grid-column:2;align-self:end}
+  .procedure .desc{grid-column:2;text-align:left;align-self:start}
+  .action,.ghost{min-height:48px}
+  .rules-actions{gap:8px}
+  .rules-actions .micro{order:3}
+  .reaction{min-height:105px;padding:9px 10px}
+  .log{min-height:190px}
+  .loglist{min-height:145px}
+  .entry{padding:9px 10px}
+  .finalgrid{gap:12px}
+  .note{font-size:14px;padding:14px}
+  .resultrow{font-size:12px}
+  .modal-overlay{padding:0;align-items:end}
+  .modal{width:100%;max-height:92vh;border-radius:14px 14px 0 0;border-left:0;border-right:0;border-bottom:0}
+  .modal-head{padding:17px 16px 12px}
+  .modal h3{font-size:24px}
+  .modal-body{padding:14px 16px}
+  .tutorial-step{grid-template-columns:30px 1fr;gap:9px;margin-bottom:12px}
+  .tutorial-n{width:28px;height:28px}
+  .tutorial-step p{font-size:11px}
+  .modal-actions{padding:0 16px 16px}
+  .modal-actions .action{width:100%}
+  .mobile-stepbar{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-bottom:1px solid #343934;
+    background:#191d1a;
+  }
+  .mobile-step{
+    padding:9px 3px;text-align:center;font:9px/1.25 var(--mono);
+    color:#777e78;border-right:1px solid #303531
+  }
+  .mobile-step:last-child{border-right:0}
+  .mobile-step.active{color:var(--amber);background:#26271f}
+  .mobile-step.done{color:var(--safe)}
+}
+@media(max-width:390px){
+  .brand h1{font-size:30px}
+  .specimens{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .specimens .card:last-child{grid-column:span 2;width:65%}
+  .rule{font-size:12px}
+}
+
 </style>
 </head>
 <body>
@@ -75,12 +174,17 @@ button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
       <h3 id="tutorialTitle">How to investigate an anomaly</h3>
     </div>
     <div class="modal-body">
-      <div class="tutorial-step"><div class="tutorial-n">1</div><div><strong>READ THE POSSIBLE BREACH RULES</strong><p>Exactly one rule is active. Read all four before you touch the evidence.</p></div></div>
-      <div class="tutorial-step"><div class="tutorial-n">2</div><div><strong>DESIGN A USEFUL TEST</strong><p>Choose a specimen and an approved procedure. Pick a combination that would help separate the possible rules.</p></div></div>
-      <div class="tutorial-step"><div class="tutorial-n">3</div><div><strong>USE SAFE / BREACH AS EVIDENCE</strong><p>A breach means the active rule was triggered. A safe result means it was not. You have up to three tests.</p></div></div>
-      <div class="tutorial-step"><div class="tutorial-n">4</div><div><strong>FILE YOUR RULE, THEN PROVE IT</strong><p>Submit the rule you think is active, then apply it to three fresh specimens in the final check.</p></div></div>
-      <div class="legend"><span class="good">SAFE ○ = rule not triggered</span><span class="bad">BREACH ✕ = rule triggered</span></div>
-      <div class="micro">Department 42 reminder: random testing is permitted, but thinking first creates less paperwork.</div>
+      <div class="goal-copy" style="margin-bottom:16px">
+        <strong>YOUR JOB: FIND WHICH ONE OF THE FOUR RULES IS TRUE.</strong>
+        <p>You get up to <b>3 tests</b>. Each test combines <b>one specimen</b> with <b>one procedure</b>. The result is either SAFE or BREACH. Use those results to eliminate rules that cannot be true.</p>
+      </div>
+      <div class="tutorial-step"><div class="tutorial-n">1</div><div><strong>READ THE FOUR RULES</strong><p>Do this first. You are not guessing blindly — you are testing four specific theories.</p></div></div>
+      <div class="tutorial-step"><div class="tutorial-n">2</div><div><strong>CHOOSE A TEST THAT TELLS YOU SOMETHING</strong><p>Pick one specimen and one procedure, then press RUN PROCEDURE.</p></div></div>
+      <div class="example-box"><strong>Example:</strong> suppose you want to test the theory “Anything put in the Filing Drawer breaches.” Put an ordinary specimen in the Filing Drawer. If the result is <span class="example-result">SAFE ○</span>, that theory cannot be correct.</div>
+      <div class="tutorial-step" style="margin-top:15px"><div class="tutorial-n">3</div><div><strong>USE UP TO THREE RESULTS, THEN SUBMIT A RULE</strong><p>You can change your selected rule at any time. Once confident, submit it.</p></div></div>
+      <div class="tutorial-step"><div class="tutorial-n">4</div><div><strong>FINAL CHECK</strong><p>Apply your chosen rule to three new specimens. Pick the one that should breach.</p></div></div>
+      <div class="legend"><span class="good">SAFE ○ = the rule condition was NOT triggered</span><span class="bad">BREACH ✕ = the rule condition WAS triggered</span></div>
+      <div class="micro">That's it: read the theories → run useful tests → eliminate wrong rules → submit your answer.</div>
     </div>
     <div class="modal-actions"><button id="closeTutorial" class="action" type="button">BEGIN CASE</button></div>
   </div>
@@ -89,11 +193,20 @@ button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
 <main class="shell">
 <header>
 <div class="header">
-<div class="brand"><div class="eyebrow">DEPARTMENT 42</div><h1>ANOMALY LAB</h1><div class="subtitle">Determine which containment rule is active.</div></div>
+<div class="brand"><div class="eyebrow">DEPARTMENT 42</div><h1>ANOMALY LAB</h1><div class="subtitle">Find the hidden breach rule in 3 tests or fewer.</div></div>
 <div class="case"><span class="case-label">ACTIVE FILE</span><strong>CASE 001</strong></div>
 </div>
 <div class="statusbar"><span>PROCEDURE: <strong>READ · TEST · DEDUCE · CONTAIN</strong></span><div class="status-right"><span>TESTS USED: <strong id="testsUsedTop">0 / 3</strong></span><button id="openTutorial" class="help-btn" type="button">HOW TO PLAY</button></div></div>
 </header>
+<div class="mobile-stepbar" aria-hidden="true">
+  <div id="mobileStep1" class="mobile-step active">1<br>READ RULES</div>
+  <div id="mobileStep2" class="mobile-step">2<br>RUN TESTS</div>
+  <div id="mobileStep3" class="mobile-step">3<br>SUBMIT RULE</div>
+  <div id="mobileStep4" class="mobile-step">4<br>FINAL CHECK</div>
+</div>
+
+</div>
+
 
 <div id="investigationArea">
 
@@ -101,7 +214,7 @@ button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
 <div class="heading"><span class="num">1</span><h2>POSSIBLE BREACH RULES</h2><span class="hint">One of these is active.</span></div>
 <div class="rules-intro"><strong>START HERE:</strong> Read all four possibilities before testing. Your first experiment should help you separate them.</div>
 <div id="rules" class="rules"></div>
-<div id="firstTurnGuide" class="first-turn"><strong>FIRST TEST GUIDE:</strong> Ask “Which specimen + procedure would give different outcomes under these rules?” Pick one useful combination, run it, then use SAFE/BREACH to rule ideas in or out.</div>
+<div id="firstTurnGuide" class="first-turn"><strong>HOW TO CHOOSE YOUR FIRST TEST:</strong> pick a rule you want to challenge, then choose a specimen + procedure that could prove it wrong. <div class="example-box"><strong>Example:</strong> To check “Anything put in the Filing Drawer breaches”, test an ordinary specimen in the Filing Drawer. If it comes back <span class="example-result">SAFE ○</span>, you can eliminate that rule.</div><div class="next-step">NEXT → Choose a specimen below, then choose a procedure.</div></div>
 <div id="guidance" class="guidance hidden"></div>
 <div class="rules-actions">
 <div class="micro">You can choose a tentative rule now, but you must perform at least one test before submitting it.</div>
@@ -120,6 +233,7 @@ button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
 <div class="testgrid">
 <div>
 <div id="procedures" class="procedures"></div>
+<div id="selectionSummary" class="selection-summary"><strong>TEST SETUP:</strong> Choose a specimen above, then choose one procedure here.</div>
 <button id="runTest" class="action" type="button" disabled>RUN PROCEDURE</button>
 <div id="reaction" class="reaction">
 <div id="reactionStage" class="reaction-stage"></div>
@@ -221,8 +335,28 @@ const els={
  placementResult:$("placementResult"),testsResult:$("testsResult"),hintResult:$("hintResult"),timeResult:$("timeResult"),
  resultNote:$("resultNote"),resultStamp:$("resultStamp"),assessment:$("assessment"),tryAgain:$("tryAgain"),
  reaction:$("reaction"),reactionStage:$("reactionStage"),reactionNote:$("reactionNote"),reactionResult:$("reactionResult"),
- firstTurnGuide:$("firstTurnGuide"),tutorialModal:$("tutorialModal"),closeTutorial:$("closeTutorial"),openTutorial:$("openTutorial")
+ firstTurnGuide:$("firstTurnGuide"),tutorialModal:$("tutorialModal"),closeTutorial:$("closeTutorial"),openTutorial:$("openTutorial"),
+ selectionSummary:$("selectionSummary"),mobileStep1:$("mobileStep1"),mobileStep2:$("mobileStep2"),mobileStep3:$("mobileStep3"),mobileStep4:$("mobileStep4")
 };
+
+function setMobileProgress(stage){
+ const steps=[els.mobileStep1,els.mobileStep2,els.mobileStep3,els.mobileStep4];
+ steps.forEach((el,i)=>{if(!el)return;el.classList.remove("active","done");if(i<stage-1)el.classList.add("done");else if(i===stage-1)el.classList.add("active")});
+}
+function updateSelectionSummary(){
+ if(!els.selectionSummary)return;
+ const specimen=state.object?caseData.objects[state.object].name:null;
+ const procedure=state.procedure;
+ if(specimen&&procedure){
+   els.selectionSummary.innerHTML=`<strong>READY TO TEST:</strong> ${specimen} + ${procedure}. <span class="next-step">Press RUN PROCEDURE.</span>`;
+ }else if(specimen){
+   els.selectionSummary.innerHTML=`<strong>SPECIMEN:</strong> ${specimen}. <span class="next-step">NEXT → Choose one procedure below.</span>`;
+ }else if(procedure){
+   els.selectionSummary.innerHTML=`<strong>PROCEDURE:</strong> ${procedure}. <span class="next-step">NEXT → Choose a specimen above.</span>`;
+ }else{
+   els.selectionSummary.innerHTML='<strong>TEST SETUP:</strong> Choose a specimen above, then choose one procedure here.';
+ }
+}
 
 function startTimer(){if(state.startTime===null)state.startTime=Date.now()}
 function formatTime(ms){const total=Math.max(0,Math.floor(ms/1000));const m=Math.floor(total/60);const s=total%60;return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
@@ -254,7 +388,7 @@ function card(o,isPlacement=false){
  const selected=isPlacement?state.placement===o.id:state.object===o.id;if(selected)b.classList.add("selected");
  b.disabled=isPlacement?state.placementConfirmed:state.ruleSubmitted||state.tests.length>=caseData.testLimit;
  b.innerHTML=`<span class="letter">${o.id}</span><span class="specimen-art">${specimenSVG(o)}</span><span class="name">${o.name}</span><span class="tag">TAG ${o.tag}</span>`;
- b.addEventListener("click",()=>{startTimer();if(isPlacement){if(state.placementConfirmed)return;state.placement=o.id;renderPlacement();updatePlacement()}else{if(b.disabled)return;state.object=o.id;renderSpecimens();updateTest();renderReactionReady()}});
+ b.addEventListener("click",()=>{startTimer();if(isPlacement){if(state.placementConfirmed)return;state.placement=o.id;renderPlacement();updatePlacement()}else{if(b.disabled)return;state.object=o.id;renderSpecimens();updateTest();renderReactionReady();updateSelectionSummary();setMobileProgress(2)}});
  return b;
 }
 function procedureVisual(p){
@@ -269,7 +403,7 @@ function renderProcedures(){
  procedureData.forEach(p=>{
   const b=document.createElement("button");b.type="button";b.className="procedure"+(state.procedure===p.id?" selected":"");b.disabled=state.ruleSubmitted||state.tests.length>=caseData.testLimit;
   b.innerHTML=procedureVisual(p)+`<span class="lbl">${p.id.toUpperCase()}</span><span class="desc">${p.desc}</span>`;
-  b.addEventListener("click",()=>{startTimer();if(b.disabled)return;state.procedure=p.id;renderProcedures();updateTest();renderReactionReady()});
+  b.addEventListener("click",()=>{startTimer();if(b.disabled)return;state.procedure=p.id;renderProcedures();updateTest();renderReactionReady();updateSelectionSummary();setMobileProgress(2)});
   els.procedures.appendChild(b)
  })
 }
@@ -299,7 +433,7 @@ function renderLog(){
 }
 function renderRules(){
  els.rules.innerHTML="";
- caseData.rules.forEach((r,i)=>{const b=document.createElement("button");b.type="button";b.className="rule"+(state.rule===r.id?" selected":"");b.disabled=state.ruleSubmitted;b.innerHTML=`<span class="ridx">${String(i+1).padStart(2,"0")}</span><span>${r.name}</span><span class="dot"></span>`;b.addEventListener("click",()=>{if(state.ruleSubmitted)return;state.rule=r.id;renderRules();updateRule()});els.rules.appendChild(b)})
+ caseData.rules.forEach((r,i)=>{const b=document.createElement("button");b.type="button";b.className="rule"+(state.rule===r.id?" selected":"");b.disabled=state.ruleSubmitted;b.innerHTML=`<span class="ridx">${String(i+1).padStart(2,"0")}</span><span>${r.name}</span><span class="dot"></span>`;b.addEventListener("click",()=>{if(state.ruleSubmitted)return;state.rule=r.id;renderRules();updateRule();setMobileProgress(state.tests.length?3:1)});els.rules.appendChild(b)})
 }
 function updateRule(){
  els.submitRule.disabled=!state.tests.length||!state.rule||state.ruleSubmitted;
@@ -314,7 +448,7 @@ function runTest(){
  const note=caseData.incidentNotes[key]||(breach?"Unexpected administrative activity observed.":"Nothing happened, which remains suspicious.");
  const test={object:state.object,procedure:state.procedure,breach,note};
  state.used.add(key);state.tests.push(test);playReaction(test);state.object=null;state.procedure=null;
- els.firstTurnGuide.classList.add("hidden");renderSpecimens();renderProcedures();renderLog();updateTest();updateRule()
+ els.firstTurnGuide.classList.add("hidden");renderSpecimens();renderProcedures();renderLog();updateTest();updateRule();updateSelectionSummary();setMobileProgress(state.rule?3:2)
 }
 function useHint(){
  if(state.hintUsed||!state.tests.length)return;state.hintUsed=true;els.guidance.textContent="GUIDANCE 42-B: "+caseData.hint;els.guidance.classList.remove("hidden");els.hintButton.textContent="GUIDANCE RECEIVED ✓";els.hintButton.classList.add("used")
@@ -322,7 +456,7 @@ function useHint(){
 function submitRule(){
  if(els.submitRule.disabled)return;state.ruleSubmitted=true;state.object=null;state.procedure=null;renderSpecimens();renderProcedures();renderRules();updateTest();updateRule();renderReactionReady();
  els.investigationArea.classList.add("hidden");els.summaryText.textContent=`${state.tests.length} test${state.tests.length===1?"":"s"} used · Rule filed${state.hintUsed?" · Guidance requested":""}.`;els.investigationSummary.classList.remove("hidden");
- els.finalSection.classList.remove("hidden");renderPlacement();updatePlacement();els.finalSection.scrollIntoView({behavior:"smooth",block:"start"})
+ els.finalSection.classList.remove("hidden");renderPlacement();updatePlacement();setMobileProgress(4);els.finalSection.scrollIntoView({behavior:"smooth",block:"start"})
 }
 function toggleReview(){
  state.reviewOpen=!state.reviewOpen;els.investigationArea.classList.toggle("hidden",!state.reviewOpen);els.reviewButton.textContent=state.reviewOpen?"HIDE INVESTIGATION":"REVIEW INVESTIGATION"
@@ -346,13 +480,13 @@ function confirmPlacement(){
  const perf=performance(ruleCorrect,placementCorrect);els.assessment.textContent=perf[0];els.resultNote.textContent=perf[1];
  els.resultsSection.classList.remove("hidden");els.resultsSection.scrollIntoView({behavior:"smooth",block:"start"})
 }
-function openTutorial(){els.tutorialModal.classList.remove("hidden");els.closeTutorial.focus()}
-function closeTutorial(){els.tutorialModal.classList.add("hidden");els.openTutorial.focus()}
+function openTutorial(){els.tutorialModal.classList.remove("hidden");document.body.style.overflow="hidden";if(els.closeTutorial)els.closeTutorial.focus()}
+function closeTutorial(){els.tutorialModal.classList.add("hidden");document.body.style.overflow="";if(els.openTutorial)els.openTutorial.focus()}
 function restart(){
  state.object=null;state.procedure=null;state.tests=[];state.used=new Set();state.rule=null;state.ruleSubmitted=false;state.placement=null;state.placementConfirmed=false;state.hintUsed=false;state.startTime=null;state.endTime=null;state.reviewOpen=false;
  els.rulesSection.classList.remove("hidden");els.guidance.classList.add("hidden");els.guidance.textContent="";els.firstTurnGuide.classList.remove("hidden");els.hintButton.textContent="GUIDANCE AFTER FIRST TEST";els.hintButton.classList.remove("used");
  els.investigationArea.classList.remove("hidden");els.investigationSummary.classList.add("hidden");els.reviewButton.textContent="REVIEW INVESTIGATION";els.finalSection.classList.add("hidden");els.resultsSection.classList.add("hidden");
- renderSpecimens();renderProcedures();renderLog();renderRules();renderPlacement();updateTest();updateRule();updatePlacement();renderReactionReady();window.scrollTo({top:0,behavior:"smooth"})
+ renderSpecimens();renderProcedures();renderLog();renderRules();renderPlacement();updateTest();updateRule();updatePlacement();renderReactionReady();updateSelectionSummary();setMobileProgress(1);updateSelectionSummary();setMobileProgress(1);window.scrollTo({top:0,behavior:"smooth"})
 }
 els.runTest.addEventListener("click",runTest);els.submitRule.addEventListener("click",submitRule);els.hintButton.addEventListener("click",useHint);els.reviewButton.addEventListener("click",toggleReview);els.confirmPlacement.addEventListener("click",confirmPlacement);els.tryAgain.addEventListener("click",restart);els.openTutorial.addEventListener("click",openTutorial);els.closeTutorial.addEventListener("click",closeTutorial);els.tutorialModal.addEventListener("click",e=>{if(e.target===els.tutorialModal)closeTutorial()});
 renderSpecimens();renderProcedures();renderLog();renderRules();renderPlacement();updateTest();updateRule();updatePlacement();renderReactionReady();
