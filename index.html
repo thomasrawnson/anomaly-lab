@@ -279,46 +279,9 @@ button:focus-visible{outline:3px solid rgba(212,164,58,.35);outline-offset:2px}
 <footer class="footer"><span>PROPERTY OF DEPARTMENT 42 · ANOMALY LAB</span><span>IF IT WAVES BACK, CLOSE THE DRAWER.</span></footer>
 </main>
 
+<script src="case-001.js"></script>
 <script>
-const caseData={
- id:"001",testLimit:3,trueRuleId:"altered",
- objects:{
-  A:{id:"A",kind:"frog",altered:true,tag:3,name:"Three-Eyed Frog"},
-  B:{id:"B",kind:"slug",altered:false,tag:7,name:"Ordinary Slug"},
-  C:{id:"C",kind:"mushroom",altered:false,tag:4,name:"Office Mushroom"},
-  D:{id:"D",kind:"mushroom",altered:true,tag:8,name:"Watching Mushroom"},
-  E:{id:"E",kind:"moth",altered:false,tag:2,name:"Ordinary Moth"}
- },
- rules:[
-  {id:"altered",name:"Specimens with visible mutations breach",evaluate:(o,p)=>o.altered===true},
-  {id:"even",name:"Even-numbered specimens breach",evaluate:(o,p)=>o.tag%2===0},
-  {id:"frog-moth",name:"Frogs and moths breach",evaluate:(o,p)=>o.kind==="frog"||o.kind==="moth"},
-  {id:"drawer",name:"Anything put in the Filing Drawer breaches",evaluate:(o,p)=>p==="Filing Drawer"}
- ],
- placement:{procedure:"Photocopier",objects:{
-  F:{id:"F",kind:"slug",altered:true,tag:5,name:"Three-Eyed Slug"},
-  G:{id:"G",kind:"frog",altered:false,tag:9,name:"Ordinary Frog"},
-  H:{id:"H",kind:"moth",altered:false,tag:6,name:"Ordinary Moth"}
- }},
- hint:"The equipment may be a distraction. Compare the specimens that caused a breach. Do they share something visible?",
- incidentNotes:{
-  "A|Filing Drawer":"The frog has requested a union representative.",
-  "A|Tea Bath":"The frog drank the test medium. Finance has queried this.",
-  "A|Photocopier":"Copy came out with four eyes. Original still has three.",
-  "B|Filing Drawer":"Slug filed under S. This was apparently acceptable.",
-  "B|Tea Bath":"Slug has become marginally more slug.",
-  "B|Photocopier":"Photocopy indistinguishable from original at normal office resolution.",
-  "C|Filing Drawer":"Mushroom remains technically a stationery issue.",
-  "C|Tea Bath":"Tea now tastes of printer toner. Nobody is surprised.",
-  "C|Photocopier":"Copy produced. HR have asked that we stop doing this.",
-  "D|Filing Drawer":"Mushroom attempted to file itself as a dependent.",
-  "D|Tea Bath":"Cap rotated 11°. Procurement notified.",
-  "D|Photocopier":"Machine printed 'SEE ATTACHED' without paper.",
-  "E|Filing Drawer":"Moth now classified as archived correspondence.",
-  "E|Tea Bath":"Moth refused beverage. Sensible.",
-  "E|Photocopier":"Moth copied successfully. Copy immediately flew away."
- }
-};
+const {caseData,evaluateExperiment,isCorrectPlacement}=case001;
 const procedureData=[
  {id:"Filing Drawer",kind:"drawer",desc:"Archive-grade containment drawer"},
  {id:"Tea Bath",kind:"tea",desc:"Lukewarm departmental tea"},
@@ -444,7 +407,7 @@ function updatePlacement(){els.confirmPlacement.disabled=!state.placement||state
 function runTest(){
  if(els.runTest.disabled)return;
  const key=state.object+"|"+state.procedure;if(state.used.has(key))return;
- const breach=trueRule().evaluate(caseData.objects[state.object],state.procedure);
+ const breach=evaluateExperiment(caseData.trueRuleId,caseData.objects[state.object],state.procedure);
  const note=caseData.incidentNotes[key]||(breach?"Unexpected administrative activity observed.":"Nothing happened, which remains suspicious.");
  const test={object:state.object,procedure:state.procedure,breach,note};
  state.used.add(key);state.tests.push(test);playReaction(test);state.object=null;state.procedure=null;
@@ -471,7 +434,7 @@ function performance(ruleCorrect,placementCorrect){
 }
 function confirmPlacement(){
  if(els.confirmPlacement.disabled)return;state.placementConfirmed=true;state.endTime=Date.now();renderPlacement();updatePlacement();
- const ruleCorrect=state.rule===caseData.trueRuleId,tr=trueRule(),breaches=Object.values(caseData.placement.objects).filter(o=>tr.evaluate(o,caseData.placement.procedure)),placementCorrect=breaches.length===1&&breaches[0].id===state.placement,perfect=ruleCorrect&&placementCorrect;
+ const ruleCorrect=state.rule===caseData.trueRuleId,placementCorrect=isCorrectPlacement(caseData.trueRuleId,state.placement),perfect=ruleCorrect&&placementCorrect;
  els.ruleResult.textContent=ruleCorrect?"✓ Correct":"✕ Incorrect";els.ruleResult.className=ruleCorrect?"good":"bad";
  els.placementResult.textContent=placementCorrect?"✓ Correct":"✕ Incorrect";els.placementResult.className=placementCorrect?"good":"bad";
  els.testsResult.textContent=state.tests.length+" / "+caseData.testLimit;els.hintResult.textContent=state.hintUsed?"Used":"Not used";els.hintResult.className=state.hintUsed?"":"good";
@@ -491,11 +454,6 @@ function restart(){
 els.runTest.addEventListener("click",runTest);els.submitRule.addEventListener("click",submitRule);els.hintButton.addEventListener("click",useHint);els.reviewButton.addEventListener("click",toggleReview);els.confirmPlacement.addEventListener("click",confirmPlacement);els.tryAgain.addEventListener("click",restart);els.openTutorial.addEventListener("click",openTutorial);els.closeTutorial.addEventListener("click",closeTutorial);els.tutorialModal.addEventListener("click",e=>{if(e.target===els.tutorialModal)closeTutorial()});
 renderSpecimens();renderProcedures();renderLog();renderRules();renderPlacement();updateTest();updateRule();updatePlacement();renderReactionReady();
 
-// Case 001 logic checks
-console.assert(trueRule().evaluate(caseData.objects.A,"Tea Bath")===true,"A should breach");
-console.assert(trueRule().evaluate(caseData.objects.C,"Filing Drawer")===false,"C should be safe");
-console.assert(trueRule().evaluate(caseData.objects.D,"Photocopier")===true,"D should breach");
-console.assert(trueRule().evaluate(caseData.placement.objects.F,"Photocopier")===true&&trueRule().evaluate(caseData.placement.objects.G,"Photocopier")===false&&trueRule().evaluate(caseData.placement.objects.H,"Photocopier")===false,"F should be the only final breach");
 </script>
 </body>
 </html>

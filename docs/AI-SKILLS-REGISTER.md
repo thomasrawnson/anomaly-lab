@@ -15,6 +15,7 @@ Record only material skill/tool contributions to a development task.
 | Date | Task | Skill/tool | Outcome/evidence |
 |---|---|---|---|
 | 2026-10-08 | Documentation setup | — | Skill definition added; no gameplay validation run |
+| 2026-10-08 | AL-BOOT-01 | Puzzle validation | Enumerated all 15 Case 001 experiments, checked four candidate signatures, minimax depth and final containment behavior in the Node test suite. |
 
 ## Future candidates (not implemented)
 
