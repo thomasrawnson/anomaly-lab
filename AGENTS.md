@@ -17,4 +17,4 @@ Anomaly Lab is a separate, five-minute, mobile-first paranormal deduction game s
 - End every task with changed files, tests run/results, known limitations, branch/commit, and any human decision needed.
 
 ## Tooling and workflow
-Use Night Parcel Office's documented AGENTS/skill/test patterns only after reviewing their actual source; do not copy unrelated game semantics. Start with one potential reusable skill: puzzle-validation (docs/GAME-DESIGN.md is its contract). For Studio Lite use docs/STUDIO-LITE-TRIAL.md. Only queue tasks whose dependencies and gates are satisfied.
+Use Night Parcel Office's documented AGENTS/skill/test patterns only after reviewing their actual source; do not copy unrelated game semantics. The first reusable skill is `.agents/skills/puzzle-validation/SKILL.md`, governed by `docs/GAME-DESIGN.md`. Read this skill when working on puzzles, rules, or case generation. Record material usage in `docs/AI-SKILLS-REGISTER.md`. For Studio Lite use docs/STUDIO-LITE-TRIAL.md. Only queue tasks whose dependencies and gates are satisfied.
