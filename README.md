@@ -10,6 +10,8 @@ Playable single-case prototype. The multi-case engine, verified puzzle generator
 - [Game design and formal validator contract](docs/GAME-DESIGN.md)
 - [Studio Lite evaluation protocol](docs/STUDIO-LITE-TRIAL.md)
 - [Development agent instructions](AGENTS.md)
+- [Puzzle-validation skill](.agents/skills/puzzle-validation/SKILL.md)
+- [AI skills register](docs/AI-SKILLS-REGISTER.md)
 
 ## First task
 AL-A01: inspect local and remote repository state, establish reproducible baseline tests, verify Case 001 and CI without modifying gameplay.
