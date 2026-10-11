@@ -16,6 +16,8 @@ Record only material skill/tool contributions to a development task.
 |---|---|---|---|
 | 2026-10-08 | Documentation setup | — | Skill definition added; no gameplay validation run |
 | 2026-10-08 | AL-BOOT-01 | Puzzle validation | Enumerated all 15 Case 001 experiments, checked four candidate signatures, minimax depth and final containment behavior in the Node test suite. |
+| 2026-10-08 | AL-A01 | Puzzle validation | Audited all 15 experiments, minimax depth 2 / budget 3 and final-choice limitations; source evidence and REVIEW verdict in `docs/BASELINE-AUDIT.md`. No rule changes. |
+| 2026-10-08 | AL-A01 | Context7 MCP | Resolved GitHub Actions documentation and queried Node CI workflow configuration for `.github/workflows/test.yml`. Hosted execution remains unverified. |
 
 ## Future candidates (not implemented)
 
