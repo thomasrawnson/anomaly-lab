@@ -1,3 +1,4 @@
+(function () {
 const caseData = {
   id: "001",
   testLimit: 3,
@@ -68,3 +69,4 @@ const case001 = { caseData, findRule, evaluateExperiment, finalBreaches, isCorre
 
 if (typeof module !== "undefined" && module.exports) module.exports = case001;
 if (typeof globalThis !== "undefined") globalThis.case001 = case001;
+})();
