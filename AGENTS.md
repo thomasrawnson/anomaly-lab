@@ -4,6 +4,13 @@ This document guides coding assistants and Pluto Studio Lite contributors.
 ## Identity and goals
 Anomaly Lab is a separate, five-minute, mobile-first paranormal deduction game set in the Department 42 universe. It shares branding, not code, with the Department 42 game. The daily puzzle is the main product. Read docs/ROADMAP.md and docs/GAME-DESIGN.md before proposing gameplay changes.
 
+## Approved next-work sequence (2026-10-11)
+- Read the v2.1 feedback decision and Codex-ready task definitions in docs/ROADMAP.md. That file alone owns task order/acceptance; docs/GAME-DESIGN.md owns logic and fairness requirements.
+- AL-A01 is **not accepted or integrated** merely because its feature-branch tests/CI pass. Reconcile it safely against current main, complete manual browser/phone smoke and obtain explicit owner approval before integration or AL-A02.
+- After A01 integration: AL-A02 (pure engine, case-specific budgets, configured-final validator); AL-UX01 (state one shared rule and known final procedure up front); AL-G01 (uncoached comprehension playtest) **before** AL-A03.
+- AL-UX02 is *conditional and unapproved*: no training level until G01 evidence and new owner authorisation. Do not add unlimited tests, Relaxed/Challenge modes or scoring systems as part of this feedback work.
+- Documentation approvals do not authorise gameplay implementation, autonomous successor tasks or deployment.
+
 ## Safe development
 - Inspect git status and do not overwrite unrelated changes. Work in small scoped branches.
 - Keep deployment compatible with a lightweight static Cloudflare Pages site; no new framework/backend by default.
