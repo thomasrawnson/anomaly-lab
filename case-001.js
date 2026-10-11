@@ -1,3 +1,4 @@
+// Keep module internals out of the classic-script global lexical scope.
 (function () {
 const caseData = {
   id: "001",
