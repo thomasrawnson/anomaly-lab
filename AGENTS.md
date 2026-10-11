@@ -17,4 +17,10 @@ Anomaly Lab is a separate, five-minute, mobile-first paranormal deduction game s
 - End every task with changed files, tests run/results, known limitations, branch/commit, and any human decision needed.
 
 ## Tooling and workflow
+The current implementation is a static `index.html` with inline presentation/state code and `case-001.js` for case data and rule helpers. Pure engine/schema extraction is AL-A02, not an existing architecture. Daily generation, persistence and scoring refinements remain later roadmap work.
+
+Use Node.js 24 and `npm test` for all automated checks; `npm run test:smoke` runs the prototype interaction suite alone. No dependency installation or build is required. `.github/workflows/test.yml` runs the same suite on pushes and pull requests, with a manual trigger. The DOM adapter executes the page's scripts in their shared global scope; it does not validate browser layout, CSS, touch, accessibility or reduced motion. Keep a manual phone smoke pass for code slices and report it as pending when not performed. See `docs/BASELINE-AUDIT.md` for source evidence, baseline defects and the manual checklist.
+
+During Studio Lite execution, stay inside the assigned isolated worktree. Do not commit, merge, push, deploy, publish, release or modify another checkout without explicit owner approval. Passing tests do not grant approval. Report cached remote refs separately from a live remote check, and never equate either with the deployed Cloudflare commit.
+
 Use Night Parcel Office's documented AGENTS/skill/test patterns only after reviewing their actual source; do not copy unrelated game semantics. The first reusable skill is `.agents/skills/puzzle-validation/SKILL.md`, governed by `docs/GAME-DESIGN.md`. Read this skill when working on puzzles, rules, or case generation. Record material usage in `docs/AI-SKILLS-REGISTER.md`. For Studio Lite use docs/STUDIO-LITE-TRIAL.md. Only queue tasks whose dependencies and gates are satisfied.
